@@ -23,14 +23,15 @@ export default function Equation1Form() {
     }),
     [x, y, xy, dx, dy, dxy],
   );
-  let {
-    x: nSigmaX,
-    y: nSigmaY,
-    xy: nTauXY,
-    dx: nSigmaXd,
-    dy: nSigmaYd,
-    dxy: nTauXYd,
-  } = numericInputs;
+  const toNumber = (n: number | null) => n ?? 0;
+
+  const nSigmaX = toNumber(numericInputs.x);
+  const nSigmaY = toNumber(numericInputs.y);
+  const nTauXY = toNumber(numericInputs.xy);
+  const nSigmaXd = toNumber(numericInputs.dx);
+  const nSigmaYd = toNumber(numericInputs.dy);
+  const nTauXYd = toNumber(numericInputs.dxy);
+
   function calcEquation() {
     if (x === "") {
       // if (nSigmaY === null || nSigmaXd === null || nSigmaYd === null) return;

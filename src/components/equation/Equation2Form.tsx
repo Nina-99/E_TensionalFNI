@@ -26,15 +26,14 @@ export default function Equation2Form() {
     }),
     [sigmaX, sigmaY, tauXY, sigmaXd, sigmaYd, tauXYd, theta],
   );
-  let {
-    sigmaX: nSigmaX,
-    sigmaY: nSigmaY,
-    tauXY: nTauXY,
-    sigmaXd: nSigmaXd,
-    sigmaYd: nSigmaYd,
-    tauXYd: nTauXYd,
-    theta: nTheta,
-  } = numericInputs;
+  const toNumber = (n: number | null) => n ?? 0;
+
+  const nSigmaX = toNumber(numericInputs.sigmaX);
+  const nSigmaY = toNumber(numericInputs.sigmaY);
+  const nTauXY = toNumber(numericInputs.tauXY);
+  const nSigmaXd = toNumber(numericInputs.sigmaXd);
+  const nSigmaYd = toNumber(numericInputs.sigmaYd);
+  const nTauXYd = toNumber(numericInputs.tauXYd);
   function calcEquation() {
     const aTheta = nTheta * (Math.PI / 180);
     const sin2 = Math.sin(2 * aTheta);
