@@ -28,155 +28,155 @@ export default function PlotMohr({ results }: { results: MohrResults }) {
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-    if (ctx) {
-      const width = canvas.width;
-      const height = canvas.height;
+    const context = ctx;
 
-      const centerAxesX = width / 2;
-      const centerAxesY = height / 2;
-      const centerCircleX = width / 2 + Number(results.sigmaP.toFixed(2));
+    const width = canvas.width;
+    const height = canvas.height;
 
-      ctx.clearRect(0, 0, width, height);
+    const centerAxesX = width / 2;
+    const centerAxesY = height / 2;
+    const centerCircleX = width / 2 + Number(results.sigmaP.toFixed(2));
 
-      const maxStressCoord = Math.max(Math.abs(Number(results.r)));
-      const viewRadius = Math.min(centerCircleX, centerAxesY) * 0.45;
+    context.clearRect(0, 0, width, height);
 
-      const scale = maxStressCoord === 0 ? 1 : viewRadius / maxStressCoord;
-      function drawAxes() {
-        const startX = -centerAxesX;
-        const startY = -centerAxesY;
-        ctx?.save();
-        ctx?.translate(centerAxesX, centerAxesY);
-        ctx.strokeStyle = "green";
-        ctx.fillStyle = "green";
-        ctx.lineWidth = 3;
-        ctx?.beginPath();
+    const maxStressCoord = Math.max(Math.abs(Number(results.r)));
+    const viewRadius = Math.min(centerCircleX, centerAxesY) * 0.45;
 
-        ctx?.moveTo(startX, 0);
-        ctx?.lineTo(width, 0);
+    const scale = maxStressCoord === 0 ? 1 : viewRadius / maxStressCoord;
+    function drawAxes() {
+      const startX = -centerAxesX;
+      const startY = -centerAxesY;
+      context?.save();
+      context?.translate(centerAxesX, centerAxesY);
+      context.strokeStyle = "green";
+      context.fillStyle = "green";
+      context.lineWidth = 3;
+      context?.beginPath();
 
-        ctx?.moveTo(startX + 10, 10);
-        ctx?.lineTo(startX, 0);
-        ctx?.lineTo(startX + 10, -10);
-        ctx?.moveTo(centerAxesX - 10, 10);
-        ctx?.lineTo(centerAxesX, 0);
-        ctx?.lineTo(centerAxesX - 10, -10);
+      context?.moveTo(startX, 0);
+      context?.lineTo(width, 0);
 
-        ctx?.moveTo(0, startY);
-        ctx?.lineTo(0, height);
+      context?.moveTo(startX + 10, 10);
+      context?.lineTo(startX, 0);
+      context?.lineTo(startX + 10, -10);
+      context?.moveTo(centerAxesX - 10, 10);
+      context?.lineTo(centerAxesX, 0);
+      context?.lineTo(centerAxesX - 10, -10);
 
-        ctx?.moveTo(10, startY + 10);
-        ctx?.lineTo(0, startY);
-        ctx?.lineTo(-10, startY + 10);
-        ctx?.moveTo(10, centerAxesY - 10);
-        ctx?.lineTo(0, centerAxesY);
-        ctx?.lineTo(-10, centerAxesY - 10);
-        ctx.font = "20px Arial";
-        ctx.fillText("σ", centerAxesX - 20, -10);
-        ctx.fillText("τ", 15, -centerAxesY + 20);
+      context?.moveTo(0, startY);
+      context?.lineTo(0, height);
 
-        ctx?.stroke();
-        ctx?.fill();
-        ctx?.restore();
-      }
-      function applyTransform() {
-        ctx?.translate(
-          width / 2 + Number(results.sigmaP.toFixed(2)) * scale,
-          centerAxesY,
-        );
-      }
-      const radio = Number(results.r) * scale;
-      function drawCircle() {
-        ctx?.save();
-        ctx.strokeStyle = "yellow";
-        ctx.lineWidth = 3;
-        applyTransform();
-        ctx?.beginPath();
-        ctx.arc(0, 0, radio, 0, 2 * Math.PI);
-        ctx?.stroke();
-        ctx?.restore();
-      }
-      function drawBlue() {
-        const angle =
-          -Number(results.doubleThetaP.toFixed(2)) * (Math.PI / 180);
-        ctx?.save();
-        applyTransform();
-        ctx?.rotate(angle);
-        ctx.strokeStyle = "blue";
-        ctx.fillStyle = "blue";
-        ctx.lineWidth = 3;
-        ctx.font = "20px Arial";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx?.beginPath();
+      context?.moveTo(10, startY + 10);
+      context?.lineTo(0, startY);
+      context?.lineTo(-10, startY + 10);
+      context?.moveTo(10, centerAxesY - 10);
+      context?.lineTo(0, centerAxesY);
+      context?.lineTo(-10, centerAxesY - 10);
+      context.font = "20px Arial";
+      context.fillText("σ", centerAxesX - 20, -10);
+      context.fillText("τ", 15, -centerAxesY + 20);
 
-        ctx?.moveTo(-radio, 0);
-        ctx?.lineTo(radio, 0);
-
-        ctx?.stroke();
-        ctx?.rotate(-angle);
-        let textX = Math.cos(angle) * (radio / 2);
-        let textY = Math.sin(angle) * (radio / 4);
-        ctx?.fillText(`${results.doubleThetaP.toFixed(2)}°`, textX, textY);
-        if (angle > 0) {
-          textX = Math.cos(angle) * (-radio - 10);
-          textY = Math.sin(angle) * (-radio - 10);
-        } else {
-          textX = Math.cos(angle) * (radio + 10);
-          textY = Math.sin(angle) * (radio + 10);
-        }
-        ctx?.fillText(`σ_max = ${results.sigma1.toFixed(2)}`, textX, textY);
-        if (angle > 0) {
-          textX = Math.cos(angle) * (radio + 10);
-          textY = Math.sin(angle) * (radio + 10);
-        } else {
-          textX = Math.cos(angle) * (-radio - 10);
-          textY = Math.sin(angle) * (-radio - 10);
-        }
-        // textX = Math.cos(angle) * (radio + 10);
-        // textY = Math.sin(angle) * (radio + 10);
-        ctx?.fillText(`σ_min = ${results.sigma2.toFixed(2)}`, textX, textY);
-        ctx?.fill();
-        ctx?.restore();
-      }
-      function drawRed() {
-        const angle = -Number(results.doubleTheta.toFixed(2)) * (Math.PI / 180);
-        ctx?.save();
-        applyTransform();
-        ctx?.rotate(angle);
-        ctx.strokeStyle = "red";
-        ctx.fillStyle = "red";
-        ctx.lineWidth = 3;
-        ctx.font = "20px Arial";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx?.beginPath();
-
-        ctx?.moveTo(-radio, 0);
-        ctx?.lineTo(radio, 0);
-        ctx?.stroke();
-        ctx?.rotate(-angle);
-        let textX = Math.cos(angle) * (radio / 2);
-        let textY = Math.sin(angle) * (radio / 4);
-        ctx?.fillText(`${results.doubleTheta.toFixed(2)}°`, textX, textY);
-        if (angle > 0) {
-          textX = Math.cos(angle) * (-radio - 10);
-          textY = Math.sin(angle) * (-radio - 10);
-        } else {
-          textX = Math.cos(angle) * (radio + 10);
-          textY = Math.sin(angle) * (radio + 10);
-        }
-        ctx?.fillText(`τ_max = ${results.tauMax.toFixed(2)}`, textX, textY);
-        ctx?.fill();
-        ctx?.restore();
-      }
-      ctx.clearRect(0, 0, width, height);
-      drawAxes();
-      drawCircle();
-      drawBlue();
-      drawRed();
+      context?.stroke();
+      context?.fill();
+      context?.restore();
     }
+    function applyTransform() {
+      context?.translate(
+        width / 2 + Number(results.sigmaP.toFixed(2)) * scale,
+        centerAxesY,
+      );
+    }
+    const radio = Number(results.r) * scale;
+    function drawCircle() {
+      context?.save();
+      context.strokeStyle = "yellow";
+      context.lineWidth = 3;
+      applyTransform();
+      context?.beginPath();
+      context.arc(0, 0, radio, 0, 2 * Math.PI);
+      context?.stroke();
+      context?.restore();
+    }
+    function drawBlue() {
+      const angle = -Number(results.doubleThetaP.toFixed(2)) * (Math.PI / 180);
+      context?.save();
+      applyTransform();
+      context?.rotate(angle);
+      context.strokeStyle = "blue";
+      context.fillStyle = "blue";
+      context.lineWidth = 3;
+      context.font = "20px Arial";
+      context.textAlign = "center";
+      context.textBaseline = "middle";
+      context?.beginPath();
+
+      context?.moveTo(-radio, 0);
+      context?.lineTo(radio, 0);
+
+      context?.stroke();
+      context?.rotate(-angle);
+      let textX = Math.cos(angle) * (radio / 2);
+      let textY = Math.sin(angle) * (radio / 4);
+      context?.fillText(`${results.doubleThetaP.toFixed(2)}°`, textX, textY);
+      if (angle > 0) {
+        textX = Math.cos(angle) * (-radio - 10);
+        textY = Math.sin(angle) * (-radio - 10);
+      } else {
+        textX = Math.cos(angle) * (radio + 10);
+        textY = Math.sin(angle) * (radio + 10);
+      }
+      context?.fillText(`σ_max = ${results.sigma1.toFixed(2)}`, textX, textY);
+      if (angle > 0) {
+        textX = Math.cos(angle) * (radio + 10);
+        textY = Math.sin(angle) * (radio + 10);
+      } else {
+        textX = Math.cos(angle) * (-radio - 10);
+        textY = Math.sin(angle) * (-radio - 10);
+      }
+      // textX = Math.cos(angle) * (radio + 10);
+      // textY = Math.sin(angle) * (radio + 10);
+      context?.fillText(`σ_min = ${results.sigma2.toFixed(2)}`, textX, textY);
+      context?.fill();
+      context?.restore();
+    }
+    function drawRed() {
+      const angle = -Number(results.doubleTheta.toFixed(2)) * (Math.PI / 180);
+      context?.save();
+      applyTransform();
+      context?.rotate(angle);
+      context.strokeStyle = "red";
+      context.fillStyle = "red";
+      context.lineWidth = 3;
+      context.font = "20px Arial";
+      context.textAlign = "center";
+      context.textBaseline = "middle";
+      context?.beginPath();
+
+      context?.moveTo(-radio, 0);
+      context?.lineTo(radio, 0);
+      context?.stroke();
+      context?.rotate(-angle);
+      let textX = Math.cos(angle) * (radio / 2);
+      let textY = Math.sin(angle) * (radio / 4);
+      context?.fillText(`${results.doubleTheta.toFixed(2)}°`, textX, textY);
+      if (angle > 0) {
+        textX = Math.cos(angle) * (-radio - 10);
+        textY = Math.sin(angle) * (-radio - 10);
+      } else {
+        textX = Math.cos(angle) * (radio + 10);
+        textY = Math.sin(angle) * (radio + 10);
+      }
+      context?.fillText(`τ_max = ${results.tauMax.toFixed(2)}`, textX, textY);
+      context?.fill();
+      context?.restore();
+    }
+    context.clearRect(0, 0, width, height);
+    drawAxes();
+    drawCircle();
+    drawBlue();
+    drawRed();
   });
   return (
     <div style={{ marginTop: "20px" }}>
