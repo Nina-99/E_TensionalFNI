@@ -10,7 +10,27 @@ export default function Equation1Form() {
   const [dy, setSigmaYd] = useState("");
   const [dxy, setTauXYd] = useState("");
 
-  const [results, setResults] = useState(null);
+  type Results = {
+    nSigmaX: number;
+    nSigmaY: number;
+    nTauXY: number;
+    nSigmaXd: number;
+    nSigmaYd: number;
+    nTauXYd: number;
+    sigmaP: number;
+    sigmaD: number;
+    sigmaDd: number;
+    sigma1: number;
+    sigma2: number;
+    tauMax: number;
+    thetaP: number;
+    theta: number;
+    doubleTheta: number;
+    doubleThetaP: number;
+    r: number;
+  };
+
+  const [results, setResults] = useState<Results | null>(null);
 
   const numericInputs = useMemo(
     () => ({
@@ -25,16 +45,18 @@ export default function Equation1Form() {
   );
   const toNumber = (n: number | null) => n ?? 0;
 
-  const nSigmaX = toNumber(numericInputs.x);
-  const nSigmaY = toNumber(numericInputs.y);
-  const nTauXY = toNumber(numericInputs.xy);
-  const nSigmaXd = toNumber(numericInputs.dx);
-  const nSigmaYd = toNumber(numericInputs.dy);
-  const nTauXYd = toNumber(numericInputs.dxy);
-
   function calcEquation() {
+    const vars = {
+      nSigmaX: toNumber(numericInputs.x),
+      nSigmaY: toNumber(numericInputs.y),
+      nTauXY: toNumber(numericInputs.xy),
+      nSigmaXd: toNumber(numericInputs.dx),
+      nSigmaYd: toNumber(numericInputs.dy),
+      nTauXYd: toNumber(numericInputs.dxy),
+    };
+
+    let { nSigmaX, nSigmaY, nTauXY, nSigmaXd, nSigmaYd, nTauXYd } = vars;
     if (x === "") {
-      // if (nSigmaY === null || nSigmaXd === null || nSigmaYd === null) return;
       nSigmaX = nSigmaXd + nSigmaYd - nSigmaY;
       if (xy !== "" && dxy !== "") {
         if (x === "") {
@@ -121,15 +143,6 @@ export default function Equation1Form() {
       }
     }
 
-    if (
-      nSigmaX === null ||
-      nSigmaY === null ||
-      nTauXY === null ||
-      nSigmaXd === null ||
-      nSigmaYd === null ||
-      nTauXYd === null
-    )
-      return;
     const sigmaP = (nSigmaX + nSigmaY) / 2;
     const sigmaD = (nSigmaX - nSigmaY) / 2;
     const sigmaDd = (nSigmaXd - nSigmaYd) / 2;

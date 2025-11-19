@@ -12,7 +12,27 @@ export default function Equation2Form() {
   const [tauXYd, setSigmaXYd] = useState("");
   const [theta, setTheta] = useState("");
 
-  const [results, setResults] = useState(null);
+  type Results = {
+    nSigmaX: number;
+    nSigmaY: number;
+    nTauXY: number;
+    nSigmaXd: number;
+    nSigmaYd: number;
+    nTauXYd: number;
+    sigmaP: number;
+    sigmaD: number;
+    sigmaDd: number;
+    sigma1: number;
+    sigma2: number;
+    tauMax: number;
+    thetaP: number;
+    theta: number;
+    doubleTheta: number;
+    doubleThetaP: number;
+    r: number;
+  };
+
+  const [results, setResults] = useState<Results | null>(null);
 
   const numericInputs = useMemo(
     () => ({
@@ -28,13 +48,19 @@ export default function Equation2Form() {
   );
   const toNumber = (n: number | null) => n ?? 0;
 
-  const nSigmaX = toNumber(numericInputs.sigmaX);
-  const nSigmaY = toNumber(numericInputs.sigmaY);
-  const nTauXY = toNumber(numericInputs.tauXY);
-  const nSigmaXd = toNumber(numericInputs.sigmaXd);
-  const nSigmaYd = toNumber(numericInputs.sigmaYd);
-  const nTauXYd = toNumber(numericInputs.tauXYd);
   function calcEquation() {
+    const vars = {
+      nSigmaX: toNumber(numericInputs.sigmaX),
+      nSigmaY: toNumber(numericInputs.sigmaY),
+      nTauXY: toNumber(numericInputs.tauXY),
+      nSigmaXd: toNumber(numericInputs.sigmaXd),
+      nSigmaYd: toNumber(numericInputs.sigmaYd),
+      nTauXYd: toNumber(numericInputs.tauXYd),
+      nTheta: toNumber(numericInputs.theta),
+    };
+
+    let { nSigmaX, nSigmaY, nTauXY, nSigmaXd, nSigmaYd, nTauXYd, nTheta } =
+      vars;
     const aTheta = nTheta * (Math.PI / 180);
     const sin2 = Math.sin(2 * aTheta);
     const cos2 = Math.cos(2 * aTheta);
