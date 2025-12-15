@@ -1,5 +1,3 @@
-import { useEffect, useRef } from "react";
-
 type MohrResults = {
   nSigmaX: number;
   nSigmaY: number;
