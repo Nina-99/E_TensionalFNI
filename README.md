@@ -15,8 +15,13 @@ Solves tension problems in [FNI Tensional](https://e-tensional-fni.vercel.app/)
 
 ### Screeshot
 
-![Enter data](./public/screeshot.png)
-![Results Mohr](./public/screeshot1.png)
+<p align="center">
+  <img src="./public/screenshot.png" width="50%"/>
+</p>
+
+<p align="center">
+  <img src="./public/screenshot1.png" width="50%"/>
+</p>
 
 ## Technologies
 
