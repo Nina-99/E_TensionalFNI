@@ -1,8 +1,22 @@
 import { useMemo, useState } from "react";
-import { PlotMohr, Square, SquareDeriv } from "../square";
+import { Square, SquareDeriv } from "../square";
+import { PlotMohr, Results } from "../results";
 
 const convert = (v: string) => (v === "" ? null : Number(v));
+
+const withSign = (
+  value: number,
+  wasProvided: boolean,
+  sign: "positive" | "negative",
+) => {
+  if (wasProvided) return value;
+  return sign === "positive" ? Math.abs(value) : -Math.abs(value);
+};
+
+type TauSign = "negative" | "positive";
+
 export default function Equation1Form() {
+  const [tauSign, setTauSign] = useState<TauSign>("negative");
   const [x, setSigmaX] = useState("");
   const [y, setSigmaY] = useState("");
   const [xy, setTauXY] = useState("");
@@ -44,6 +58,8 @@ export default function Equation1Form() {
     [x, y, xy, dx, dy, dxy],
   );
   const toNumber = (n: number | null) => n ?? 0;
+  const hasXY = xy !== "";
+  const hasXYd = dxy !== "";
 
   function calcEquation() {
     const vars = {
@@ -90,12 +106,12 @@ export default function Equation1Form() {
         }
       } else if (xy === "") {
         if (nTauXYd === null) return;
-        nTauXY = -Math.sqrt(
+        nTauXY = Math.sqrt(
           (nSigmaXd - nSigmaY) * (nSigmaY - nSigmaYd) + Math.pow(nTauXYd, 2),
         );
       } else {
         if (nTauXY === null) return;
-        nTauXYd = -Math.sqrt(
+        nTauXYd = Math.sqrt(
           Math.pow(nTauXY, 2) - (nSigmaXd + nSigmaY) * (nSigmaY - nSigmaYd),
         );
       }
@@ -104,12 +120,12 @@ export default function Equation1Form() {
       nSigmaY = nSigmaXd + nSigmaYd - nSigmaX;
       if (xy === "") {
         if (nTauXYd === null) return;
-        nTauXY = -Math.sqrt(
+        nTauXY = Math.sqrt(
           (nSigmaYd - nSigmaX) * (nSigmaX - nSigmaXd) + Math.pow(nTauXYd, 2),
         );
       } else {
         if (nTauXY === null) return;
-        nTauXYd = -Math.sqrt(
+        nTauXYd = Math.sqrt(
           Math.pow(nTauXY, 2) - (nSigmaYd - nSigmaX) * (nSigmaX - nSigmaXd),
         );
       }
@@ -118,12 +134,12 @@ export default function Equation1Form() {
       nSigmaXd = nSigmaX + nSigmaY - nSigmaYd;
       if (xy === "") {
         if (nTauXYd === null) return;
-        nTauXY = -Math.sqrt(
+        nTauXY = Math.sqrt(
           (nSigmaX - nSigmaYd) * (nSigmaY - nSigmaYd) + Math.pow(nTauXYd, 2),
         );
       } else {
         if (nTauXY === null) return;
-        nTauXYd = -Math.sqrt(
+        nTauXYd = Math.sqrt(
           Math.pow(nTauXY, 2) - (nSigmaX - nSigmaYd) * (nSigmaY - nSigmaYd),
         );
       }
@@ -132,16 +148,19 @@ export default function Equation1Form() {
       nSigmaYd = nSigmaX + nSigmaY - nSigmaXd;
       if (xy === "") {
         if (nTauXYd === null) return;
-        nTauXY = -Math.sqrt(
+        nTauXY = Math.sqrt(
           (nSigmaY - nSigmaXd) * (nSigmaX - nSigmaXd) + Math.pow(nTauXYd, 2),
         );
       } else {
         if (nTauXY === null) return;
-        nTauXYd = -Math.sqrt(
+        nTauXYd = Math.sqrt(
           Math.pow(nTauXY, 2) - (nSigmaY - nSigmaXd) * (nSigmaX - nSigmaXd),
         );
       }
     }
+
+    nTauXY = withSign(nTauXY, hasXY, tauSign);
+    nTauXYd = withSign(nTauXYd, hasXYd, tauSign);
 
     const sigmaP = (nSigmaX + nSigmaY) / 2;
     const sigmaD = (nSigmaX - nSigmaY) / 2;
@@ -150,10 +169,11 @@ export default function Equation1Form() {
     const theta =
       (Math.acos((nTauXY * nTauXYd + sigmaD * sigmaDd) / Math.pow(r, 2)) / 2) *
       (180 / Math.PI);
+    const thetaP = (Math.atan(nTauXY / sigmaD) / 2) * (180 / Math.PI);
+
     const doubleTheta = 2 * theta;
     const sigma1 = sigmaP + r;
     const sigma2 = sigmaP - r;
-    const thetaP = (Math.atan(nTauXY / sigmaD) / 2) * (180 / Math.PI);
     const doubleThetaP = 2 * thetaP;
     const tauMax = r;
     setResults({
@@ -181,6 +201,10 @@ export default function Equation1Form() {
     calcEquation();
   };
 
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setTauSign(event.target.value as TauSign);
+  };
+
   return (
     <div>
       <div className="squared">
@@ -204,6 +228,17 @@ export default function Equation1Form() {
         {" "}
         calcular{" "}
       </button>
+      <br />
+      <br />
+      <select
+        value={tauSign}
+        onChange={handleSelectChange}
+        style={{ padding: "10px", fontSize: "16px", marginBottom: "20px" }}
+      >
+        <option value="negative">Resultados con τ negativo</option>
+        <option value="positive">Resultados con τ positivo</option>
+      </select>
+      {results && <Results results={results} />}
       {results && <PlotMohr results={results} />}
     </div>
   );

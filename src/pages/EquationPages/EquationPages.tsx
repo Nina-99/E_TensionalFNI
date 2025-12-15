@@ -31,7 +31,7 @@ export default function EquationPages() {
         onChange={handleSelectChange}
         style={{ padding: "10px", fontSize: "16px", marginBottom: "20px" }}
       >
-        <option value="Equation1">Fórmula de Esfuerzos Principales</option>
+        <option value="Equation1">Fórmula de Esfuerzos sin Angulo</option>
         <option value="Equation2">Fórmula de Esfuerzos con Angulo</option>
       </select>
       <p className="univ-name">Univ. Nina Nuñez Avel</p>

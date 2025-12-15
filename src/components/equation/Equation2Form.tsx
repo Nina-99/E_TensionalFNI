@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { matrix, lusolve } from "mathjs";
-import { PlotMohr, Square, SquareDerivAngle } from "../square";
+import { Square, SquareDerivAngle } from "../square";
+import { PlotMohr, Results } from "../results";
 
 const convert = (v: string) => (v === "" ? null : Number(v));
 export default function Equation2Form() {
@@ -230,7 +231,7 @@ export default function Equation2Form() {
         {" "}
         calcular{" "}
       </button>
-      {/* {results && <PlotMohr results={results} />} */}
+      {results && <Results results={results} />}
       {results && <PlotMohr results={results} />}
     </div>
   );

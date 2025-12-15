@@ -143,3 +143,8 @@ select {
     border: 2px solid #fff;
   }
 }
+.reset {
+  margin-top: 5px;
+  background-color: blue;
+  border-radius: 20px;
+}
