@@ -5,7 +5,6 @@
 1. [General Info](#general-info)
 2. [Technologies](#technologies)
 3. [Installation](#installation)
-4. [Collaboration](#collaboration)
 
 ## General Info
 
@@ -16,11 +15,11 @@ Solves tension problems in [FNI Tensional](https://e-tensional-fni.vercel.app/)
 ### Screeshot
 
 <p align="center">
-  <img src="./public/screenshot.png" width="50%"/>
+  <img src="./public/screenshot.png" width="70%"/>
 </p>
 
 <p align="center">
-  <img src="./public/screenshot1.png" width="50%"/>
+  <img src="./public/screenshot1.png" width="70%"/>
 </p>
 
 ## Technologies
